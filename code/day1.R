@@ -38,16 +38,18 @@ point_creator <- function(n, mean_x = 0, mean_y = 0, sd_x = 1, sd_y = 1, colors)
 
 # aRt creation -----------------------------------------------------------
 
+colors_used <- list()
+
 for (i in 1:10) {
-  colors <- rand_color(20)
+  colors_used[[i]] <- rand_color(20)
   data <- list()
-  data[[1]] <- point_creator(n = 3500, sd_x = 5, sd_y = 5, colors = colors)
-  data[[2]] <- point_creator(n = 100, colors = colors)
-  data[[3]] <- point_creator(n = 99, colors = colors)
-  data[[4]] <- point_creator(n = 800, sd_x = 3, sd_y = 3, colors = colors)
-  data[[5]] <- point_creator(n = 2000, sd_x = 1.6, sd_y = 8, colors = colors)
-  data[[6]] <- point_creator(n = 1000, sd_x = 5, sd_y = 5, colors = colors)
-  data[[7]] <- point_creator(n = 2500, sd_x = 4, sd_y = 4, colors = colors)
+  data[[1]] <- point_creator(n = 3500, sd_x = 5, sd_y = 5, colors = colors_used[[i]])
+  data[[2]] <- point_creator(n = 100, colors = colors_used[[i]])
+  data[[3]] <- point_creator(n = 99, colors = colors_used[[i]])
+  data[[4]] <- point_creator(n = 800, sd_x = 3, sd_y = 3, colors = colors_used[[i]])
+  data[[5]] <- point_creator(n = 2000, sd_x = 1.6, sd_y = 8, colors = colors_used[[i]])
+  data[[6]] <- point_creator(n = 1000, sd_x = 6, sd_y = 6, colors = colors_used[[i]])
+  data[[7]] <- point_creator(n = 2500, sd_x = 4, sd_y = 4, colors = colors_used[[i]])
   
   plot_limit <- map_dfr(.x = data, ~ {
     .x %>% 
@@ -70,7 +72,7 @@ for (i in 1:10) {
     scale_size_identity() +
     scale_color_identity() +
     scale_fill_identity() +
-    coord_cartesian(xlim = c(-plot_limit - 2,plot_limit + 2), ylim = c(-plot_limit - 2,plot_limit + 2)) +
+    coord_cartesian(xlim = c(-plot_limit - 1, plot_limit + 1), ylim = c(-plot_limit - 1, plot_limit + 1)) +
     theme_void() + 
     theme(
       plot.background = element_rect(color = "black", fill = "white")
@@ -79,3 +81,6 @@ for (i in 1:10) {
   ggsave(filename = paste0("day1_", i, ".png"), path = here("viz"), plot = output,
          device = "png", width = 8, height = 8, dpi = 300)
 }
+
+# saving the used colors so that it is easier to recreate specific plots later
+save(colors_used, file = here("viz", "day1", "colors_used.RData"))
