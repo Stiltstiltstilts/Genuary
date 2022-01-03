@@ -78,7 +78,7 @@ for (i in 1:10) {
       plot.background = element_rect(color = "black", fill = "white")
     )
   
-  ggsave(filename = paste0("day1_", i, ".png"), path = here("viz"), plot = output,
+  ggsave(filename = paste0("day1_", i, ".png"), path = here("viz", "day1"), plot = output,
          device = "png", width = 8, height = 8, dpi = 300)
 }
 

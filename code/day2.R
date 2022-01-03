@@ -7,34 +7,35 @@
 
 library(pacman)
 p_load(
-  scales,
   here,
-  patchwork,
-  tidyverse
+  tidyverse,
+  imager
 )
 
 source(here("code", "misc_functions.R"))
 
-# 1.  Data generation functions -------------------------------------------
+# stuff -------------------------------------------------------------------
 
-# generates random points in 2D space
-rand_points <- function(n, mean_x, mean_y, sd_x, sd_y) {
-  tibble(
-    x = rnorm(n, mean = mean_x, sd = sd_x),
-    y = rnorm(n, mean = mean_y, sd = sd_y)
-  )
+image <- load.image(here("viz", "day1", "day1_1.png"))
+image_gray <- grayscale(rm.alpha(image))
+image_threshold <- image_gray > 0.5
+
+final_data <- image_threshold %>% as.data.frame
+colors_used <- list()
+
+for (i in 1:10) {
+  colors_used[[i]] <- rand_color(1)
+  
+  ggplot(final_data, aes(x,y)) + 
+    geom_raster(aes(fill=cc %>% as.factor)) + 
+    scale_fill_manual(values = c("white", colors_used[[i]])) +
+    theme_void() + 
+    theme(legend.position = "none",
+          plot.background = element_rect(color = "black", fill = "white"))
+  
+  ggsave(filename = paste0("day2_", i, ".png"), path = here("viz", "day2"),
+         device = "png", width = 8, height = 8, dpi = 300)
 }
 
-# runs rand_points() and adds size and color to each point
-point_creator <- function(n, mean_x = 0, mean_y = 0, sd_x = 1, sd_y = 1, colors) {
-  rand_points(n, mean_x, mean_y, sd_x,sd_y) %>%
-    mutate(
-      # add point sizes
-      size = sample(seq(0.5,10,.5), n(), replace = TRUE),
-      # add point colors
-      color = sample(colors, n(), replace = TRUE)
-    )
-}
-
-# aRt creation -----------------------------------------------------------
-
+# saving the used colors so that it is easier to recreate specific plots later
+save(colors_used, file = here("viz", "day2", "colors_used.RData"))
