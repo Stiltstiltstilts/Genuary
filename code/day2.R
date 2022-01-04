@@ -28,7 +28,7 @@ for (i in 1:10) {
   
   ggplot(final_data, aes(x,y)) + 
     geom_raster(aes(fill=cc %>% as.factor)) + 
-    scale_fill_manual(values = c("white", colors_used[[i]])) +
+    scale_fill_manual(values = colors_used[[i]]) +
     theme_void() + 
     theme(legend.position = "none",
           plot.background = element_rect(color = "black", fill = "white"))
